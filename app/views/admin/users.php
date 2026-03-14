@@ -123,22 +123,19 @@ foreach ($rooms as $room) {
 
                                             <div class="d-flex align-items-center gap-2">
 
-                                                <?php if (
-                                                    !empty($user["image"])
-                                                ): ?>
+                                                <?php
+                                                $userName = (string)($user["name"] ?? "Unknown");
+                                                $userImage = trim((string)($user["image"] ?? ""));
+                                                if ($userImage !== '' && filter_var($userImage, FILTER_VALIDATE_URL)) {
+                                                    $userImageSrc = $userImage;
+                                                } elseif ($userImage !== '') {
+                                                    $userImageSrc = "/uploads/" . rawurlencode($userImage);
+                                                } else {
+                                                    $userImageSrc = "https://ui-avatars.com/api/?name=" . rawurlencode($userName);
+                                                }
+                                                ?>
 
-                                                    <img src="/uploads/<?= $user[
-                                                        "image"
-                                                    ] ?>" class="user-img">
-
-                                                <?php else: ?>
-
-                                                    <img src="https://ui-avatars.com/api/?name=<?= $user[
-                                                        "name"
-                                                    ] ?>"
-                                                        class="user-img">
-
-                                                <?php endif; ?>
+                                                <img src="<?= htmlspecialchars($userImageSrc) ?>" class="user-img" alt="<?= htmlspecialchars($userName) ?>">
 
                                                 <span class="fw-semibold">
                                                     <?= htmlspecialchars(

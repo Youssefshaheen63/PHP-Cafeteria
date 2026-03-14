@@ -115,14 +115,18 @@
                   <td>
                     <?php
                       $imageFile = (string) $product['image'];
-                      $productImageFs = __DIR__ . '/../../../public/assets/images/products/' . $imageFile;
-                      $legacyImageFs = __DIR__ . '/../../../public/assets/images/' . $imageFile;
-                      if (file_exists($productImageFs)) {
-                        $imageSrc = '/assets/images/products/' . rawurlencode($imageFile);
-                      } elseif (file_exists($legacyImageFs)) {
-                        $imageSrc = '/assets/images/' . rawurlencode($imageFile);
+                      if ($imageFile !== '' && filter_var($imageFile, FILTER_VALIDATE_URL)) {
+                        $imageSrc = $imageFile;
                       } else {
-                        $imageSrc = '';
+                        $productImageFs = __DIR__ . '/../../../public/assets/images/products/' . $imageFile;
+                        $legacyImageFs = __DIR__ . '/../../../public/assets/images/' . $imageFile;
+                        if (file_exists($productImageFs)) {
+                          $imageSrc = '/assets/images/products/' . rawurlencode($imageFile);
+                        } elseif (file_exists($legacyImageFs)) {
+                          $imageSrc = '/assets/images/' . rawurlencode($imageFile);
+                        } else {
+                          $imageSrc = '';
+                        }
                       }
                     ?>
                     <?php if ($imageSrc !== ''): ?>
