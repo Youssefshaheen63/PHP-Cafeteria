@@ -148,9 +148,13 @@ class OrderController
             return null;
         }
 
+        $roomId = !empty($requestedRoomId)
+            ? (int)$requestedRoomId
+            : (int)($currentUser['room_id'] ?? 0);
+
         return [
             'user_id' => (int)$currentUser['id'],
-            'room_id' => !empty($currentUser['room_id']) ? (int)$currentUser['room_id'] : null,
+            'room_id' => $roomId > 0 ? $roomId : null,
         ];
     }
 
