@@ -6,6 +6,106 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Cafeteria</title>
     <?php include_once __DIR__ . "/../layouts/jsCDN.php"; ?>
+
+    <style>
+        .page-title {
+            font-weight: 700;
+            color: #4E342E;
+        }
+
+        .products-card {
+            border: 1px solid #4E342E;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .product-card {
+            border: 1px solid #4E342E;
+            border-radius: 14px;
+            overflow: hidden;
+            transition: transform .25s ease, box-shadow .25s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+
+        .product-img {
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .product-title {
+            font-weight: 600;
+            color: #4E342E;
+        }
+
+        .cart-card, .order-card {
+            border: 1px solid #4E342E;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .cart-card .card-header, .order-card .card-header {
+            background: #4E342E;
+            color: #fff;
+            font-weight: 600;
+            border: none;
+        }
+
+        .btn-primary {
+            border-radius: 20px;
+            background: #4E342E !important;
+            border-color: #4E342E !important;
+            transition: all .25s ease;
+        }
+
+        .btn-primary:hover {
+            background: #6f4e37 !important;
+            border-color: #6f4e37 !important;
+        }
+
+        .btn-outline-secondary {
+            border-radius: 20px;
+            transition: all .25s ease;
+        }
+
+        .latest-order-card {
+            border: none;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .latest-order-card .card-header {
+            background: #4E342E;
+            font-weight: 600;
+            border: none;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+    .btn-plus-minus {
+        border: 1px solid #4E342E;
+        background: #fff;
+        color: #4E342E !important;
+        padding: 2px 8px;
+        font-size: 0.8rem;
+        border-radius: 20px;
+        transition: all 0.25s ease;
+        text-decoration: none;
+    }
+
+    .btn-plus-minus:hover {
+    background: #4E342E !important;
+    color: #fff !important;
+    border-color: #4E342E !important;
+    }
+    </style>
 </head>
 
 <body>
@@ -35,13 +135,13 @@
             : '';
     ?>
     <?php include __DIR__ . "/../layouts/navbar.php"; ?>
-    <div class="container py-4">
+    <div class="container py-5">
         <div class="mb-4">
             <?php if ($isAdmin): ?>
-                <h2 class="mb-1">Cashier Order Panel</h2>
+                <h2 class="page-title mb-1">Cashier Order Panel</h2>
                 <p class="text-muted mb-0">Create orders on behalf of cafeteria users.</p>
             <?php else: ?>
-                <h2 class="mb-1">Welcome, <?= htmlspecialchars($_SESSION['user_name'] ?? 'User') ?></h2>
+                <h2 class="page-title mb-1">Welcome, <?= htmlspecialchars($_SESSION['user_name'] ?? 'User') ?></h2>
                 <p class="text-muted mb-0">Build your order and confirm it for your room.</p>
             <?php endif; ?>
         </div>
@@ -49,7 +149,7 @@
         <?php if (!empty($latestOrder)): ?>
             <div class="row mb-4">
                 <div class="col-12">
-                    <div class="card border-success">
+                    <div class="card latest-order-card border-success">
                         <div class="card-header bg-success text-white">
                             Latest Order
                             <?php if ($isAdmin && !empty($selectedUser)): ?>
@@ -93,11 +193,11 @@
 
         <div class="row">
             <div class="col-lg-8 mb-4">
-                <h2 class="mb-3">Products</h2>
+                <h2 class="page-title mb-3">Products</h2>
                 <div class="row g-3">
                     <?php foreach ($products as $product): ?>
                         <div class="col-md-4">
-                            <div class="card h-100">
+                            <div class="card product-card h-100">
                                 <a href="/cart/add?id=<?= (int) $product['id'] ?><?= htmlspecialchars($orderUserQuery) ?>" class="text-decoration-none">
                                     <?php if (!empty($product['image'])): ?>
                                         <?php
@@ -117,7 +217,7 @@
                                             }
                                         ?>
                                         <?php if ($imageSrc !== ''): ?>
-                                            <img src="<?= htmlspecialchars($imageSrc) ?>" class="card-img-top" alt="<?= htmlspecialchars($product['name']) ?>">
+                                            <img src="<?= htmlspecialchars($imageSrc) ?>" class="card-img-top product-img" alt="<?= htmlspecialchars($product['name']) ?>">
                                         <?php else: ?>
                                             <div class="bg-light d-flex align-items-center justify-content-center" style="height: 180px;">
                                                 <span class="text-muted">No Image</span>
@@ -130,7 +230,7 @@
                                     <?php endif; ?>
                                 </a>
                                 <div class="card-body d-flex flex-column">
-                                    <h5 class="card-title"><?= htmlspecialchars($product['name']) ?></h5>
+                                    <h5 class="card-title product-title"><?= htmlspecialchars($product['name']) ?></h5>
                                     <p class="card-text mb-0">
                                         <strong>Price:</strong>
                                         <?= number_format((float) $product['price'], 2) ?>
@@ -143,7 +243,7 @@
             </div>
 
             <div class="col-lg-4">
-                <div class="card mb-4">
+                <div class="card cart-card mb-4">
                     <div class="card-header">
                         Cart
                     </div>
@@ -160,9 +260,9 @@
                                             </div>
                                         </div>
                                         <div class="d-flex align-items-center">
-                                            <a href="/cart/minus?id=<?= (int) $product['id'] ?><?= htmlspecialchars($orderUserQuery) ?>" class="btn btn-sm btn-outline-secondary me-1">-</a>
+                                            <a href="/cart/minus?id=<?= (int) $product['id'] ?><?= htmlspecialchars($orderUserQuery) ?>" class="btn-plus-minus btn-sm btn-outline-secondary me-1">-</a>
                                              <span class="mx-1"><?= (int) $item['quantity'] ?></span>
-                                            <a href="/cart/plus?id=<?= (int) $product['id'] ?><?= htmlspecialchars($orderUserQuery) ?>" class="btn btn-sm btn-outline-secondary ms-1">+</a>
+                                            <a href="/cart/plus?id=<?= (int) $product['id'] ?><?= htmlspecialchars($orderUserQuery) ?>" class="btn-plus-minus btn-sm btn-outline-secondary ms-1">+</a>
                                         </div>
                                         <div class="ms-3 text-end">
                                             <small class="text-muted">Total</small>
@@ -181,7 +281,7 @@
                     </div>
                 </div>
 
-                <div class="card">
+                <div class="card order-card">
                     <div class="card-header">
                         Order Details
                     </div>
@@ -217,31 +317,17 @@
                                     </select>
                                 </div>
                             <?php else: ?>
-                                <?php if (!empty($currentUser['room_id'])): ?>
-                                    <input type="hidden" name="room_id" value="<?= (int)$currentUser['room_id'] ?>">
-                                <?php endif; ?>
                                 <div class="mb-3">
-                                    <label class="form-label">Order For</label>
-                                    <input type="text" class="form-control" value="<?= htmlspecialchars($currentUser['name'] ?? ($_SESSION['user_name'] ?? 'Current user')) ?>" readonly>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Room</label>
-                                    <input
-                                        type="text"
-                                        class="form-control"
-                                        value="<?php
-                                            $roomLabel = 'Not assigned';
-                                            if (!empty($rooms) && !empty($currentUser['room_id'])) {
-                                                foreach ($rooms as $room) {
-                                                    if ((int)$room['id'] === (int)$currentUser['room_id']) {
-                                                        $roomLabel = $room['name'] ?? $room['room_name'] ?? ('Room #' . $room['id']);
-                                                        break;
-                                                    }
-                                                }
-                                            }
-                                            echo htmlspecialchars($roomLabel);
-                                        ?>"
-                                        readonly>
+                                    <label for="room_id" class="form-label">Room</label>
+                                    <select name="room_id" id="room_id" class="form-select" required>
+                                        <option value="">Select a room</option>
+                                        <?php foreach ($rooms as $room): ?>
+                                            <?php $roomId = (int)$room['id']; ?>
+                                            <option value="<?= $roomId ?>" <?= (!empty($currentUser['room_id']) && (int)$currentUser['room_id'] === $roomId) ? 'selected' : '' ?>>
+                                                <?= htmlspecialchars($room['name'] ?? $room['room_name'] ?? ('Room #' . $roomId)) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
                                 </div>
                             <?php endif; ?>
                             <div class="mb-3">
